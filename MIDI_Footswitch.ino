@@ -21,7 +21,7 @@ char hexaKeys[ROWS][COLS] = {
 byte rowPins[ROWS] = {12,11, 10, 9}; 
 byte colPins[COLS] = {8, 7, 6}; 
 
-uint8_t ledPins[] = {0, 4, 9, A0, A1, A2, A3, A4, A5, 13 };
+uint8_t ledPins[] = {22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
 
 uint8_t pChangeChan = 0xC0; // PC channel 0-F 0-16 1-16
 uint8_t contChange = 0xB0; // CC Midi command
@@ -72,14 +72,44 @@ void effectOff(uint8_t pos){
   Serial.write(contOff);
   delay(10);
 }
+void ledOn(uint8_t led_pin){
+  digitalWrite(ledPins[led_pin],HIGH);
+}
+void ledOff(uint8_t led_pin){
+  digitalWrite(ledPins[led_pin],LOW);
+}
+void ledsOn(){
+  for(uint i = 0; i<10; i++){
+    digitalWrite(ledPins[i],HIGH);
+  }
+}
+void ledsOff(){
+  for(uint i = 0; i<10; i++){
+    digitalWrite(ledPins[i],LOW);
+  }
+}
+
 void setup(){
   Serial.begin(9600);
+  while (!Serial) {
+    ; // wait for serial port to connect. Needed for native USB
+  }
   delay(3000);
   for (int i = 0; i < 10; i++) pinMode(ledPins[i], OUTPUT);
   display.setBrightness(7);
   display.setSegments(SEG_INIT);
   delay(2000);
   display.clear();
+  for(uint i = 0; i<10; i++){
+    pinMode(ledPins[i],OUTPUT);
+    digitalWrite(ledPins[i],LOW);
+  }
+  for(uint i=0; i<3; i++){
+    ledsOn();
+    delay(100);
+    ledsOff();
+  }
+  
 }
 
 void loop(){
@@ -105,6 +135,8 @@ void loop(){
 			Serial.print(curbank);
 			Serial.print(" ,0 ON\n");
 			//effectOn((curbank*10));
+      ledsOff();
+      ledOn(0);
       sentbank = curbank;
       sentpreset = 0;
 		  break;
@@ -115,6 +147,8 @@ void loop(){
       Serial.print(curbank);
       Serial.print(" ,1 ON\n");
       //effectOn((curbank*10));
+      ledsOff();
+      ledOn(1);
       sentbank = curbank;
       sentpreset = 1;
 		  break;
@@ -124,6 +158,8 @@ void loop(){
       Serial.print(curbank);
       Serial.print(" ,2 ON\n");
       //effectOn((curbank*10));
+      ledsOff();
+      ledOn(2);
       sentbank = curbank;
       sentpreset = 2;
 		  break;
@@ -133,6 +169,8 @@ void loop(){
       Serial.print(curbank);
       Serial.print(" ,3 ON\n");
       //effectOn((curbank*10));
+      ledsOff();
+      ledOn(3);
       sentbank = curbank;
       sentpreset = 3;
 			break;
@@ -142,6 +180,8 @@ void loop(){
       Serial.print(curbank);
       Serial.print(" ,4 ON\n");
       //effectOn((curbank*10));
+      ledsOff();
+      ledOn(4);
       sentbank = curbank;
       sentpreset = 4;
 			break;
@@ -151,6 +191,8 @@ void loop(){
       Serial.print(curbank);
       Serial.print(" ,5 ON\n");
       //effectOn((curbank*10));
+      ledsOff();
+      ledOn(5);
       sentbank = curbank;
       sentpreset = 5;
 			break;
@@ -161,6 +203,8 @@ void loop(){
       Serial.print(curbank);
       Serial.print(" ,6 ON\n");
       //effectOn((curbank*10));
+      ledsOff();
+      ledOn(6);
       sentbank = curbank;
       sentpreset = 6;
 			break;
@@ -170,6 +214,8 @@ void loop(){
       Serial.print(curbank);
       Serial.print(" ,7 ON\n");
       //effectOn((curbank*10));
+      ledsOff();
+      ledOn(7);
       sentbank = curbank;
       sentpreset = 7;
 			break;
@@ -179,6 +225,8 @@ void loop(){
 			  Serial.print("Bank ");
         Serial.print(curbank);
         Serial.print(" ,8 ON\n");
+        ledsOff();
+        ledOn(8);
         //effectOn((curbank*10));
         sentbank = curbank;
         sentpreset = 8;
@@ -190,6 +238,8 @@ void loop(){
   			Serial.print("Bank ");
         Serial.print(curbank);
         Serial.print(" ,9 ON\n");
+        ledsOff();
+        ledOn(9);
         //effectOn((curbank*10));
         sentbank = curbank;
         sentpreset = 9;
@@ -200,6 +250,8 @@ void loop(){
 			//Serial.println("bank up");
 			if(curbank<12){
 				curbank++;
+			}else{
+        curbank = 0;
 			}
 			break;
 		}    
@@ -207,6 +259,8 @@ void loop(){
 			//Serial.println("bank down");
 			if(curbank>0){
 				curbank--;
+			}else{
+        curbank = 12;
 			}
 			break;
 		}
